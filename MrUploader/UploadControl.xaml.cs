@@ -23,6 +23,7 @@ namespace MrUploader
 
 		public string BrowseText { get; set; }
 		public string ButtonURL { get; set; }
+		public string CallbackData { get; set; }
 
 		public FileUploadControl()
 		{
@@ -108,7 +109,7 @@ namespace MrUploader
 					upload.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(upload_Debug);
 					try
 					{
-						HtmlPage.Window.Invoke("newUploadCallback", upload.SessionId, upload.Name, upload.FileLength, DateTime.Now.Millisecond, dlg.Files.Count());
+						HtmlPage.Window.Invoke("newUploadCallback", CallbackData, upload.SessionId, upload.Name, upload.FileLength, DateTime.Now.Millisecond, dlg.Files.Count());
 					}
 					catch (Exception) { }
 					files.Add(upload);
@@ -131,7 +132,7 @@ namespace MrUploader
 			FileUpload fu = sender as FileUpload;
 			try
 			{
-				HtmlPage.Window.Invoke("UploadProgressCallback", fu.SessionId, args.TotalBytesUploaded, args.TotalBytes);
+				HtmlPage.Window.Invoke("UploadProgressCallback", CallbackData, fu.SessionId, args.TotalBytesUploaded, args.TotalBytes);
 			}
 			catch (Exception) {}
 		}
@@ -143,7 +144,7 @@ namespace MrUploader
 			{
 				try
 				{
-					HtmlPage.Window.Invoke("UploadDataCallback", fu.SessionId, fu.ResponseText, fu.FileLength);
+					HtmlPage.Window.Invoke("UploadDataCallback", CallbackData, fu.SessionId, fu.ResponseText, fu.FileLength);
 				}
 				catch (Exception) {}
 			}
@@ -151,7 +152,7 @@ namespace MrUploader
 			{
 				try
 				{
-					HtmlPage.Window.Invoke("UploadFailedCallback", fu.SessionId, fu.ErrorCode, fu.ErrorDescr);
+					HtmlPage.Window.Invoke("UploadFailedCallback", CallbackData, fu.SessionId, fu.ErrorCode, fu.ErrorDescr);
 				}
 				catch (Exception) {}
 			}
