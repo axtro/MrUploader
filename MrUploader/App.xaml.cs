@@ -26,14 +26,14 @@ namespace MrUploader
 					uploadControl.UploadChunkSize = tempLong;
 			}
 */
-			if (e.InitParams.Keys.Contains("BrowseText") && !string.IsNullOrEmpty(e.InitParams["BrowseText"]))
-			{
-				uploadControl.BrowseText = e.InitParams["BrowseText"];
-			}
-			if (e.InitParams.Keys.Contains("buttonURL") && !string.IsNullOrEmpty(e.InitParams["buttonURL"]))
-			{
-				uploadControl.ButtonURL = e.InitParams["buttonURL"];
-			}
+            //if (e.InitParams.Keys.Contains("BrowseText") && !string.IsNullOrEmpty(e.InitParams["BrowseText"]))
+            //{
+            //    uploadControl.BrowseText = e.InitParams["BrowseText"];
+            //}
+            //if (e.InitParams.Keys.Contains("buttonURL") && !string.IsNullOrEmpty(e.InitParams["buttonURL"]))
+            //{
+            //    uploadControl.ButtonURL = e.InitParams["buttonURL"];
+            //}
 			this.RootVisual = uploadControl;
 		}
 

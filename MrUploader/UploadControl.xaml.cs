@@ -21,8 +21,6 @@ namespace MrUploader
 		private DispatcherTimer notifyTimer;
 		private int notifyJsTick;
 
-		public string BrowseText { get; set; }
-		public string ButtonURL { get; set; }
 		public string CallbackData { get; set; }
 
 		public FileUploadControl()
@@ -64,32 +62,10 @@ namespace MrUploader
 				notifyTimer.Stop();
 			}
 		}
-		void SetClassicButton(object sender, RoutedEventArgs e)
-		{
-			((Button)LayoutRoot.FindName("BrowseButton")).Content = BrowseText;
-			((Button)LayoutRoot.FindName("BrowseButton")).Visibility = Visibility.Visible;
-			((Image)LayoutRoot.FindName("BrowseImage")).Visibility = Visibility.Collapsed;
-		}
-		void SetImageButton()
-		{
-			BitmapImage im = new BitmapImage(new Uri(ButtonURL));
-			im.ImageFailed += new EventHandler<ExceptionRoutedEventArgs>(SetClassicButton);
-			((Image)LayoutRoot.FindName("BrowseImage")).Source = im;
-			((Image)LayoutRoot.FindName("BrowseImage")).Visibility = Visibility.Visible;
-			((Button)LayoutRoot.FindName("BrowseButton")).Visibility = Visibility.Collapsed;
-		}
 		void Page_Loaded(object sender, RoutedEventArgs e)			
 		{
 			HtmlPage.RegisterScriptableObject("API", this);
 			StartNotifyJS();
-			if (ButtonURL.Length > 0)
-			{
-				SetImageButton();
-			}
-			else
-			{
-				SetClassicButton(null, null);
-			}
 		}
 		void addFilesButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -199,20 +175,5 @@ namespace MrUploader
 			fu.CancelUpload();
 		}
 
-		[ScriptableMember]
-		public void setEnabled(bool state)
-		{
-			((Button)LayoutRoot.FindName("BrowseButton")).IsEnabled = state;
-			if (state)
-			{
-				((Image)LayoutRoot.FindName("BrowseImage")).Opacity = 1;
-				LayoutRoot.IsHitTestVisible = true;
-			}
-			else
-			{
-				((Image)LayoutRoot.FindName("BrowseImage")).Opacity = 0.5;
-				LayoutRoot.IsHitTestVisible = false;
-			}
-		}
 	}
 }

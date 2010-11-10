@@ -44,3 +44,15 @@ C:\User\CVS_projects\mpop\swf\Files_uploader\MrUploader\MrUploader\obj\Debug\MrU
 C:\User\CVS_projects\mpop\swf\Files_uploader\MrUploader\MrUploader\obj\Debug\XapCacheFile.xml
 C:\User\CVS_projects\mpop\swf\Files_uploader\MrUploader\MrUploader\obj\Debug\App.g.cs
 C:\User\CVS_projects\mpop\swf\Files_uploader\MrUploader\MrUploader\obj\Debug\UploadControl.g.cs
+C:\Users\Henning Kiel\Documents\MrUploader\MrUploader\Bin\Debug\MrUploader.dll
+C:\Users\Henning Kiel\Documents\MrUploader\MrUploader\Bin\Debug\MrUploader.pdb
+C:\Users\Henning Kiel\Documents\MrUploader\MrUploader\Bin\Debug\AppManifest.xaml
+C:\Users\Henning Kiel\Documents\MrUploader\MrUploader\Bin\Debug\MrUploader.xap
+C:\Users\Henning Kiel\Documents\MrUploader\MrUploader\Bin\Debug\TestPage.html
+C:\Users\Henning Kiel\Documents\MrUploader\MrUploader\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Henning Kiel\Documents\MrUploader\MrUploader\obj\Debug\App.g.cs
+C:\Users\Henning Kiel\Documents\MrUploader\MrUploader\obj\Debug\UploadControl.g.cs
+C:\Users\Henning Kiel\Documents\MrUploader\MrUploader\obj\Debug\MrUploader.g.resources
+C:\Users\Henning Kiel\Documents\MrUploader\MrUploader\obj\Debug\MrUploader.dll
+C:\Users\Henning Kiel\Documents\MrUploader\MrUploader\obj\Debug\MrUploader.pdb
+C:\Users\Henning Kiel\Documents\MrUploader\MrUploader\obj\Debug\XapCacheFile.xml
