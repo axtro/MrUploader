@@ -45,11 +45,11 @@ namespace MrUploader
 		public StorageFile GetFileInfo(FileUpload fu)
 		{
 			StorageFile sf = null;
-			if (fu.UniqueKey != "")
+			if (fu.SessionId != "")
 			{
 				try
 				{
-					sf = (StorageFile)settings.First(f => f.Key == fu.UniqueKey).Value;
+					sf = (StorageFile)settings.First(f => f.Key == fu.SessionId).Value;
 				}
 				catch (Exception) { }
 			}
@@ -57,14 +57,14 @@ namespace MrUploader
 		}
 		public void AddOrUpdateFileInfo(FileUpload fu)
 		{
-			if (fu.UniqueKey == "")
+			if (fu.SessionId == "")
 			{
 				return;
 			}
 			StorageFile sf = null;
 			try
 			{
-				sf = (StorageFile)settings.First(f => f.Key == fu.UniqueKey).Value;
+				sf = (StorageFile)settings.First(f => f.Key == fu.SessionId).Value;
 			}
 			catch (Exception) { }
 			if (sf != null)
@@ -81,7 +81,7 @@ namespace MrUploader
 				sf.CreatedOn = DateTime.Now;
 				try
 				{
-					settings.Add(sf.Key, sf);
+					settings.Add(sf.SessionId, sf);
 				}
 				catch (Exception) { }
 			}
@@ -89,11 +89,11 @@ namespace MrUploader
 		}
 		public void DeleteFileInfo(FileUpload fu)
 		{
-			if (fu.UniqueKey != "")
+			if (fu.SessionId != "")
 			{
 				try
 				{
-					settings.Remove(fu.UniqueKey);
+					settings.Remove(fu.SessionId);
 				}
 				catch (Exception) { }
 				Flush();

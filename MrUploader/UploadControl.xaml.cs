@@ -67,17 +67,17 @@ namespace MrUploader
 			HtmlPage.RegisterScriptableObject("API", this);
 			StartNotifyJS();
 		}
-		void addFilesButton_Click(object sender, RoutedEventArgs e)
+		public void chooseFile(String fileFilter, ScriptObject sender)
 		{
 			OpenFileDialog dlg = new OpenFileDialog();
-			dlg.Filter = "All Files|*.*";
-			dlg.Multiselect = true;
+			dlg.Filter = fileFilter; // "All Files|*.*";
+			dlg.Multiselect = false;
 
 			if ((bool)dlg.ShowDialog())
 			{
 				foreach (FileInfo file in dlg.Files)
 				{
-					FileUpload upload = new FileUpload(this.Dispatcher, file);
+					FileUpload upload = new FileUpload(this.Dispatcher, file, sender);
 
 					upload.StatusChanged += new EventHandler(upload_StatusChanged);
 					upload.UploadProgressChanged += new ProgressChangedEvent(upload_UploadProgressChanged);
@@ -85,13 +85,40 @@ namespace MrUploader
 					upload.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(upload_Debug);
 					try
 					{
-						HtmlPage.Window.Invoke("newUploadCallback", CallbackData, upload.SessionId, upload.Name, upload.FileLength, DateTime.Now.Millisecond, dlg.Files.Count());
+						sender.Invoke("onFileChoose", upload.SessionId, upload.Name, upload.FileLength);
+						//HtmlPage.Window.Invoke("newUploadCallback", CallbackData, upload.SessionId, upload.Name, upload.FileLength, DateTime.Now.Millisecond, dlg.Files.Count());
 					}
 					catch (Exception) { }
 					files.Add(upload);
 				}
 			}
 		}
+
+		//void addFilesButton_Click(object sender, RoutedEventArgs e)
+		//{
+		//    OpenFileDialog dlg = new OpenFileDialog();
+		//    dlg.Filter = "All Files|*.*";
+		//    dlg.Multiselect = true;
+
+		//    if ((bool)dlg.ShowDialog())
+		//    {
+		//        foreach (FileInfo file in dlg.Files)
+		//        {
+		//            FileUpload upload = new FileUpload(this.Dispatcher, file);
+
+		//            upload.StatusChanged += new EventHandler(upload_StatusChanged);
+		//            upload.UploadProgressChanged += new ProgressChangedEvent(upload_UploadProgressChanged);
+		//            //debug
+		//            upload.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(upload_Debug);
+		//            try
+		//            {
+		//                HtmlPage.Window.Invoke("newUploadCallback", CallbackData, upload.SessionId, upload.Name, upload.FileLength, DateTime.Now.Millisecond, dlg.Files.Count());
+		//            }
+		//            catch (Exception) { }
+		//            files.Add(upload);
+		//        }
+		//    }
+		//}
 
 		void upload_Debug(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
@@ -106,9 +133,11 @@ namespace MrUploader
 		void upload_UploadProgressChanged(object sender, UploadProgressChangedEventArgs args)
 		{
 			FileUpload fu = sender as FileUpload;
+			ScriptObject callback = fu.Data as ScriptObject;
 			try
 			{
-				HtmlPage.Window.Invoke("UploadProgressCallback", CallbackData, fu.SessionId, args.TotalBytesUploaded, args.TotalBytes);
+				callback.Invoke("onUploadProgress", fu.SessionId, args.TotalBytesUploaded, args.TotalBytes);
+				//HtmlPage.Window.Invoke("UploadProgressCallback", CallbackData, fu.SessionId, args.TotalBytesUploaded, args.TotalBytes);
 			}
 			catch (Exception) {}
 		}
@@ -116,11 +145,13 @@ namespace MrUploader
 		void upload_StatusChanged(object sender, EventArgs e)
 		{
 			FileUpload fu = sender as FileUpload;
+			ScriptObject callback = fu.Data as ScriptObject;
 			if (fu.Status == FileUploadStatus.Complete)
 			{
 				try
 				{
-					HtmlPage.Window.Invoke("UploadDataCallback", CallbackData, fu.SessionId, fu.ResponseText, fu.FileLength);
+					callback.Invoke("onUploadSuccess", fu.SessionId);
+					//HtmlPage.Window.Invoke("UploadDataCallback", CallbackData, fu.SessionId, fu.ResponseText, fu.FileLength);
 				}
 				catch (Exception) {}
 			}
@@ -128,7 +159,8 @@ namespace MrUploader
 			{
 				try
 				{
-					HtmlPage.Window.Invoke("UploadFailedCallback", CallbackData, fu.SessionId, fu.ErrorCode, fu.ErrorDescr);
+					callback.Invoke("onUploadFailed", fu.SessionId);
+					//HtmlPage.Window.Invoke("UploadFailedCallback", CallbackData, fu.SessionId, fu.ErrorCode, fu.ErrorDescr);
 				}
 				catch (Exception) {}
 			}

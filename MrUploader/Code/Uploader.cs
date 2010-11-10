@@ -54,6 +54,7 @@ namespace MrUploader
 		public event EventHandler StatusChanged;
 
 		public string SessionId;
+		public Object Data { get; set; } // Arbitrary data provided by the callback
 		public Uri UploadUrl { get; set; }
 		public string AdditionalData { get; set; }
 		public string UniqueKey { get; set; }
@@ -212,16 +213,17 @@ namespace MrUploader
 			}
 		}
 
-		public FileUpload(Dispatcher dispatcher)
+		public FileUpload(Dispatcher dispatcher, Object data)
 		{
 			Dispatcher = dispatcher;
+			Data = data;
 			Status = FileUploadStatus.Pending;
 			SessionId = (1100000000 + new Random().Next(10000000, 99999999)).ToString();
 			uploadRetryTimer = new DispatcherTimer();
 			uploadRetryTimer.Tick += new EventHandler(UploadFileRetryEx);
 		}
 
-		public FileUpload(Dispatcher dispatcher, FileInfo fileToUpload) : this(dispatcher)
+		public FileUpload(Dispatcher dispatcher, FileInfo fileToUpload, Object data) : this(dispatcher, data)
 		{
 			File = fileToUpload;
 			StorageFile sf = new UserStorage().GetFileInfo(this);
