@@ -67,6 +67,8 @@ namespace MrUploader
 			HtmlPage.RegisterScriptableObject("API", this);
 			StartNotifyJS();
 		}
+
+		[ScriptableMember]
 		public void chooseFile(String fileFilter, ScriptObject sender)
 		{
 			OpenFileDialog dlg = new OpenFileDialog();
