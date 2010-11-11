@@ -155,7 +155,12 @@ namespace MrUploader
 			}
 			else if (fu.Status == FileUploadStatus.Canceled)
 			{
-				files.Remove(fu);
+				try
+				{
+					callback.Invoke("onUploadCanceled", fu.SessionId);
+					//HtmlPage.Window.Invoke("UploadFailedCallback", CallbackData, fu.SessionId, fu.ErrorCode, fu.ErrorDescr);
+				}
+				catch (Exception) { }
 			}
 		 }
 

@@ -220,6 +220,7 @@ namespace MrUploader
 
 		public void StartUpload()
 		{
+			cancel = false;
 			if (File == null || UploadUrl == null)
 			{
 				Status = FileUploadStatus.Failed;
