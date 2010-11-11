@@ -66,7 +66,6 @@ namespace MrUploader
 		void Page_Loaded(object sender, RoutedEventArgs e)			
 		{
 			HtmlPage.RegisterScriptableObject("API", this);
-			HtmlPage.Window.Eval("alert('registered');");
 			StartNotifyJS();
 		}
 
