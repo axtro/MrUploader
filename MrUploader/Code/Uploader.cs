@@ -42,10 +42,6 @@ namespace MrUploader
 		// constants related to computing file hash
 		public readonly static int NumPoints = 50;
 		public readonly static int MaxPartSize = 100 * 1024;
-		// constants related to IsolatedStorage
-		public readonly static int MinFilesizeToAdd = 1 * 1024 * 1024;
-		public readonly static int MaxIsoStorageSize = 500 * 1024;
-		public readonly static TimeSpan KeepInIsoStorage = new TimeSpan(6, 0, 0); // 6 hours
 	}
 
 	public class FileUpload : INotifyPropertyChanged
@@ -54,7 +50,6 @@ namespace MrUploader
 		public event EventHandler StatusChanged;
 
 		public string SessionId;
-		public Object Data { get; set; } // Arbitrary data provided by the callback
 		public Uri UploadUrl { get; set; }
 		public string AdditionalData { get; set; }
 		public string UniqueKey { get; set; }
@@ -82,10 +77,6 @@ namespace MrUploader
 				UniqueKey = "";
 				try
 				{
-					if (FileLength < Constants.MinFilesizeToAdd)
-					{
-						throw new Exception();
-					}
 					// Adler32 version to compute "unique" file hash
 					// UniqueKey will be Constants.NumPoints * sizeof(uint) length
 					int part_size = (int)((file.Length / Constants.NumPoints) < Constants.MaxPartSize ? file.Length / Constants.NumPoints : Constants.MaxPartSize);
@@ -213,26 +204,18 @@ namespace MrUploader
 			}
 		}
 
-		public FileUpload(Dispatcher dispatcher, Object data)
+		public FileUpload(Dispatcher dispatcher)
 		{
 			Dispatcher = dispatcher;
-			Data = data;
 			Status = FileUploadStatus.Pending;
 			SessionId = (1100000000 + new Random().Next(10000000, 99999999)).ToString();
 			uploadRetryTimer = new DispatcherTimer();
 			uploadRetryTimer.Tick += new EventHandler(UploadFileRetryEx);
 		}
 
-		public FileUpload(Dispatcher dispatcher, FileInfo fileToUpload, Object data) : this(dispatcher, data)
+		public FileUpload(Dispatcher dispatcher, FileInfo fileToUpload) : this(dispatcher)
 		{
 			File = fileToUpload;
-			StorageFile sf = new UserStorage().GetFileInfo(this);
-			if (sf != null && sf.SessionId != null && sf.UploadUrl != null)
-			{
-				ResponseText = sf.UploadedRanges;
-				SessionId = sf.SessionId;
-				UploadUrl = new Uri(sf.UploadUrl);
-			}
 		}
 
 		public void StartUpload()
@@ -423,13 +406,11 @@ namespace MrUploader
 				}
 				if (BytesUploaded < FileLength)
 				{
-					new UserStorage().AddOrUpdateFileInfo(this);
 					chunkRetries = Constants.MaxChunkRetries;
 					Status = FileUploadStatus.Continue;
 				}
 				else
 				{
-					new UserStorage().DeleteFileInfo(this);
 					Status = FileUploadStatus.Complete;
 				}
 			}

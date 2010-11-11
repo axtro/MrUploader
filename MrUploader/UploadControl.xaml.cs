@@ -19,6 +19,7 @@ namespace MrUploader
 	{
 		private ObservableCollection<FileUpload> files;
 		private DispatcherTimer notifyTimer;
+		private ScriptObject callback;
 		private int notifyJsTick;
 
 		public string CallbackData { get; set; }
@@ -51,7 +52,7 @@ namespace MrUploader
 			notifyJsTick--;
 			try
 			{
-				HtmlPage.Window.Invoke("UploadPluginReady", "Silverlight", Environment.Version.ToString(), 0);
+				//HtmlPage.Window.Invoke("UploadPluginReady", "Silverlight", Environment.Version.ToString(), 0);
 			}
 			catch (Exception)
 			{
@@ -65,21 +66,27 @@ namespace MrUploader
 		void Page_Loaded(object sender, RoutedEventArgs e)			
 		{
 			HtmlPage.RegisterScriptableObject("API", this);
+			HtmlPage.Window.Eval("alert('registered');");
 			StartNotifyJS();
 		}
 
 		[ScriptableMember]
-		public void chooseFile(String fileFilter, ScriptObject sender)
+		public void registerCallback(ScriptObject sender)
+		{
+			callback = sender;
+		}
+
+		void addFilesButton_Click(object sender, RoutedEventArgs e)
 		{
 			OpenFileDialog dlg = new OpenFileDialog();
-			dlg.Filter = fileFilter; // "All Files|*.*";
+			dlg.Filter = "All Files|*.*";
 			dlg.Multiselect = false;
 
 			if ((bool)dlg.ShowDialog())
 			{
 				foreach (FileInfo file in dlg.Files)
 				{
-					FileUpload upload = new FileUpload(this.Dispatcher, file, sender);
+					FileUpload upload = new FileUpload(this.Dispatcher, file);
 
 					upload.StatusChanged += new EventHandler(upload_StatusChanged);
 					upload.UploadProgressChanged += new ProgressChangedEvent(upload_UploadProgressChanged);
@@ -87,7 +94,7 @@ namespace MrUploader
 					upload.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(upload_Debug);
 					try
 					{
-						sender.Invoke("onFileChoose", upload.SessionId, upload.Name, upload.FileLength);
+						callback.Invoke("onFileChoose", upload.SessionId, upload.Name, upload.FileLength);
 						//HtmlPage.Window.Invoke("newUploadCallback", CallbackData, upload.SessionId, upload.Name, upload.FileLength, DateTime.Now.Millisecond, dlg.Files.Count());
 					}
 					catch (Exception) { }
@@ -95,32 +102,6 @@ namespace MrUploader
 				}
 			}
 		}
-
-		//void addFilesButton_Click(object sender, RoutedEventArgs e)
-		//{
-		//    OpenFileDialog dlg = new OpenFileDialog();
-		//    dlg.Filter = "All Files|*.*";
-		//    dlg.Multiselect = true;
-
-		//    if ((bool)dlg.ShowDialog())
-		//    {
-		//        foreach (FileInfo file in dlg.Files)
-		//        {
-		//            FileUpload upload = new FileUpload(this.Dispatcher, file);
-
-		//            upload.StatusChanged += new EventHandler(upload_StatusChanged);
-		//            upload.UploadProgressChanged += new ProgressChangedEvent(upload_UploadProgressChanged);
-		//            //debug
-		//            upload.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(upload_Debug);
-		//            try
-		//            {
-		//                HtmlPage.Window.Invoke("newUploadCallback", CallbackData, upload.SessionId, upload.Name, upload.FileLength, DateTime.Now.Millisecond, dlg.Files.Count());
-		//            }
-		//            catch (Exception) { }
-		//            files.Add(upload);
-		//        }
-		//    }
-		//}
 
 		void upload_Debug(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
@@ -135,7 +116,6 @@ namespace MrUploader
 		void upload_UploadProgressChanged(object sender, UploadProgressChangedEventArgs args)
 		{
 			FileUpload fu = sender as FileUpload;
-			ScriptObject callback = fu.Data as ScriptObject;
 			try
 			{
 				callback.Invoke("onUploadProgress", fu.SessionId, args.TotalBytesUploaded, args.TotalBytes);
@@ -147,7 +127,6 @@ namespace MrUploader
 		void upload_StatusChanged(object sender, EventArgs e)
 		{
 			FileUpload fu = sender as FileUpload;
-			ScriptObject callback = fu.Data as ScriptObject;
 			if (fu.Status == FileUploadStatus.Complete)
 			{
 				try
@@ -181,9 +160,9 @@ namespace MrUploader
 		 }
 
 		[ScriptableMember]
-		public void startUpload(string id, string url, string additionalData)
+		public void startUpload(string url, string additionalData)
 		{
-			FileUpload fu = files.First(f => f.SessionId == id);
+			FileUpload fu = files.First();
 			try
 			{
 				if (fu.UploadUrl == null || fu.UploadUrl.ToString().Length == 0) // it can be set from IsoStorage
@@ -203,9 +182,9 @@ namespace MrUploader
 		}
 
 		[ScriptableMember]
-		public void cancelUpload(string id)
+		public void cancelUpload()
 		{
-			FileUpload fu = files.First(f => f.SessionId == id);
+			FileUpload fu = files.First();
 			fu.CancelUpload();
 		}
 

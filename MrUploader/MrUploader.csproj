@@ -81,7 +81,6 @@
     </Compile>
     <Compile Include="Code\Uploader.cs" />
     <Compile Include="Code\UploadProgressChangedEventArgs.cs" />
-    <Compile Include="Code\UserStorage.cs" />
     <Compile Include="UploadControl.xaml.cs">
       <DependentUpon>UploadControl.xaml</DependentUpon>
     </Compile>
