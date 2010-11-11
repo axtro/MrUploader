@@ -83,6 +83,7 @@ namespace MrUploader
 
 			if ((bool)dlg.ShowDialog())
 			{
+				files.Clear();
 				foreach (FileInfo file in dlg.Files)
 				{
 					FileUpload upload = new FileUpload(this.Dispatcher, file);
