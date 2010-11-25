@@ -24,6 +24,11 @@ namespace MrUploader
 
 		public string CallbackData { get; set; }
 		public string FileDialogFilter { get; set; }
+		public string ButtonText
+		{
+			get { return button1.Name; }
+			set { button1.Content = value; }
+		}
 
 		public FileUploadControl()
 		{

@@ -23,14 +23,18 @@ namespace MrUploader
 			{
 				uploadControl.FileDialogFilter = e.InitParams["FileFilter"];
 			}
-/*
-			long tempLong = 0;
-			if (e.InitParams.Keys.Contains("UploadChunkSize") && !string.IsNullOrEmpty(e.InitParams["UploadChunkSize"]))
+			if (e.InitParams.Keys.Contains("ButtonText") && !string.IsNullOrEmpty(e.InitParams["ButtonText"]))
 			{
-				if (long.TryParse(e.InitParams["UploadChunkSize"], out tempLong) && tempLong > 0)
-					uploadControl.UploadChunkSize = tempLong;
+				uploadControl.ButtonText = e.InitParams["ButtonText"];
 			}
-*/
+			/*
+									long tempLong = 0;
+									if (e.InitParams.Keys.Contains("UploadChunkSize") && !string.IsNullOrEmpty(e.InitParams["UploadChunkSize"]))
+									{
+										if (long.TryParse(e.InitParams["UploadChunkSize"], out tempLong) && tempLong > 0)
+											uploadControl.UploadChunkSize = tempLong;
+									}
+						*/
             //if (e.InitParams.Keys.Contains("BrowseText") && !string.IsNullOrEmpty(e.InitParams["BrowseText"]))
             //{
             //    uploadControl.BrowseText = e.InitParams["BrowseText"];
