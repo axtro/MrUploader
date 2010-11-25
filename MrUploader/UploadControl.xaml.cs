@@ -23,6 +23,7 @@ namespace MrUploader
 		private int notifyJsTick;
 
 		public string CallbackData { get; set; }
+		public string FileDialogFilter { get; set; }
 
 		public FileUploadControl()
 		{
@@ -30,6 +31,7 @@ namespace MrUploader
 			InitializeComponent();
 			Loaded += new RoutedEventHandler(Page_Loaded);
 			notifyTimer = new DispatcherTimer();
+			FileDialogFilter = "All Files|*.*";
 			/*
 			 We could use the following line to switch to ClientHttp http stack.
 			 In this case we will have one advantage: correct response code from server (to distinguish 201 and 200 code).
@@ -78,7 +80,7 @@ namespace MrUploader
 		void addFilesButton_Click(object sender, RoutedEventArgs e)
 		{
 			OpenFileDialog dlg = new OpenFileDialog();
-			dlg.Filter = "All Files|*.*";
+			dlg.Filter = FileDialogFilter;
 			dlg.Multiselect = false;
 
 			if ((bool)dlg.ShowDialog())

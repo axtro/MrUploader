@@ -18,6 +18,11 @@ namespace MrUploader
 		private void Application_Startup(object sender, StartupEventArgs e)
 		{			
 			FileUploadControl uploadControl = new FileUploadControl();
+
+			if (e.InitParams.Keys.Contains("FileFilter") && !string.IsNullOrEmpty(e.InitParams["FileFilter"]))
+			{
+				uploadControl.FileDialogFilter = e.InitParams["FileFilter"];
+			}
 /*
 			long tempLong = 0;
 			if (e.InitParams.Keys.Contains("UploadChunkSize") && !string.IsNullOrEmpty(e.InitParams["UploadChunkSize"]))
